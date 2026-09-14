@@ -1,0 +1,145 @@
+/* ==========================================================================
+   VitaCare - Sistema de Gestão Clínica Integrada (Arquitetura CSS Modular)
+   ========================================================================== */
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 15px;
+    background-color: #f4f6f9;
+    color: #333;
+}
+
+.header {
+    background-color: #003366;
+    color: white;
+    padding: 15px;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header h1 { margin: 0; font-size: 20px; }
+.header small { color: #d0e1f9; }
+
+.menu-tabs {
+    margin: 15px 0;
+    background: #e2e8f0;
+    padding: 6px;
+    border-radius: 4px;
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+
+.btn-tab {
+    padding: 8px 14px;
+    font-size: 13px;
+    cursor: pointer;
+    background: white;
+    border: 1px solid #cbd5e1;
+    border-radius: 3px;
+}
+
+.btn-tab.active {
+    background: #003366;
+    color: white;
+    font-weight: bold;
+}
+
+.conteudo-box {
+    background: white;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.aba { display: none; }
+.aba.active { display: block; }
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    font-size: 13px;
+}
+
+table, th, td { border: 1px solid #999; }
+th { background-color: #eee; padding: 8px; text-align: left; }
+td { padding: 8px; }
+tr:nth-child(even) { background-color: #f9f9f9; }
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    max-width: 700px;
+}
+
+.form-group { margin-bottom: 10px; }
+.form-group.full { grid-column: span 2; }
+.form-group label { display: block; font-weight: bold; font-size: 12px; margin-bottom: 3px; }
+
+.form-group input, .form-group select, .form-group textarea {
+    width: 100%;
+    padding: 6px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+.btn-salvar {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 3px;
+}
+
+.btn-secundario {
+    background: #003366;
+    color: white;
+    border: none;
+    padding: 4px 8px;
+    cursor: pointer;
+    border-radius: 3px;
+    font-size: 12px;
+}
+
+.badge { padding: 3px 6px; border-radius: 3px; font-weight: bold; font-size: 11px; }
+.badge-verde { background: #d4edda; color: #155724; }
+.badge-amarelo { background: #fff3cd; color: #856404; }
+.badge-vermelho { background: #f8d7da; color: #721c24; }
+.badge-azul { background: #cce5ff; color: #004085; }
+
+.sub-menu {
+    margin-bottom: 15px;
+    border-bottom: 2px solid #003366;
+    padding-bottom: 5px;
+}
+
+.sub-btn {
+    background: #f0f0f0;
+    border: 1px solid #ccc;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.sub-btn.active { background: #003366; color: white; }
+.sub-pane { display: none; }
+.sub-pane.active { display: block; }
+
+.modal {
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5); z-index: 100;
+}
+
+.modal-body {
+    background: white; margin: 5% auto; padding: 20px; width: 60%;
+    border-radius: 4px; max-height: 80vh; overflow-y: auto;
+}
+
+.fechar { float: right; font-size: 20px; cursor: pointer; font-weight: bold; }

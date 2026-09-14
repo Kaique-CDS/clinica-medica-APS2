@@ -4,132 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VitaCare - Sistema de Gestão Clínica Integrada</title>
-    <style>
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-            margin: 15px;
-            background-color: #f4f6f9;
-            color: #333;
-        }
-        .header {
-            background-color: #003366;
-            color: white;
-            padding: 15px;
-            border-radius: 4px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .header h1 { margin: 0; font-size: 20px; }
-        .header small { color: #d0e1f9; }
-        .menu-tabs {
-            margin: 15px 0;
-            background: #e2e8f0;
-            padding: 6px;
-            border-radius: 4px;
-            display: flex;
-            gap: 5px;
-            flex-wrap: wrap;
-        }
-        .btn-tab {
-            padding: 8px 14px;
-            font-size: 13px;
-            cursor: pointer;
-            background: white;
-            border: 1px solid #cbd5e1;
-            border-radius: 3px;
-        }
-        .btn-tab.active {
-            background: #003366;
-            color: white;
-            font-weight: bold;
-        }
-        .conteudo-box {
-            background: white;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        .aba { display: none; }
-        .aba.active { display: block; }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-            font-size: 13px;
-        }
-        table, th, td { border: 1px solid #999; }
-        th { background-color: #eee; padding: 8px; text-align: left; }
-        td { padding: 8px; }
-        tr:nth-child(even) { background-color: #f9f9f9; }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            max-width: 700px;
-        }
-        .form-group { margin-bottom: 10px; }
-        .form-group.full { grid-column: span 2; }
-        .form-group label { display: block; font-weight: bold; font-size: 12px; margin-bottom: 3px; }
-        .form-group input, .form-group select, .form-group textarea {
-            width: 100%;
-            padding: 6px;
-            box-sizing: border-box;
-            border: 1px solid #ccc;
-            border-radius: 3px;
-        }
-        .btn-salvar {
-            background: #28a745;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            cursor: pointer;
-            font-weight: bold;
-            border-radius: 3px;
-        }
-        .btn-secundario {
-            background: #003366;
-            color: white;
-            border: none;
-            padding: 4px 8px;
-            cursor: pointer;
-            border-radius: 3px;
-            font-size: 12px;
-        }
-        .badge { padding: 3px 6px; border-radius: 3px; font-weight: bold; font-size: 11px; }
-        .badge-verde { background: #d4edda; color: #155724; }
-        .badge-amarelo { background: #fff3cd; color: #856404; }
-        .badge-vermelho { background: #f8d7da; color: #721c24; }
-        .badge-azul { background: #cce5ff; color: #004085; }
-
-        .sub-menu {
-            margin-bottom: 15px;
-            border-bottom: 2px solid #003366;
-            padding-bottom: 5px;
-        }
-        .sub-btn {
-            background: #f0f0f0;
-            border: 1px solid #ccc;
-            padding: 5px 10px;
-            cursor: pointer;
-            font-size: 12px;
-        }
-        .sub-btn.active { background: #003366; color: white; }
-        .sub-painel { display: none; }
-        .sub-painel.active { display: block; }
-        
-        .modal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5); z-index: 100;
-        }
-        .modal-body {
-            background: white; margin: 5% auto; padding: 20px; width: 60%;
-            border-radius: 4px; max-height: 80vh; overflow-y: auto;
-        }
-        .fechar { float: right; font-size: 20px; cursor: pointer; font-weight: bold; }
-    </style>
+    <link rel="stylesheet" href="/src/styles/main.css">
 </head>
 <body>
 
@@ -140,7 +15,7 @@
         </div>
         <div>
             <label style="color:white; font-size:12px;"><strong>Usuário Logado:</strong></label>
-            <select id="selectAtor" onchange="alert('Perfil alterado para: ' + this.value)">
+            <select id="selectAtor">
                 <option value="Recepcionista">Ana Souza (Recepção)</option>
                 <option value="Medico">Dr. Roberto Silva (Médico)</option>
                 <option value="Enfermeiro">Juliana Lima (Enfermaria)</option>
@@ -192,7 +67,7 @@
             <!-- Sub Pacientes -->
             <div id="sub-pacientes" class="sub-painel active">
                 <h3>Cadastrar Novo Paciente</h3>
-                <form class="form-grid" onsubmit="salvarPaciente(event)">
+                <form class="form-grid" id="formPaciente">
                     <div class="form-group"><label>Nome Completo *</label><input type="text" id="pNome" required></div>
                     <div class="form-group"><label>CPF *</label><input type="text" id="pCpf" placeholder="000.000.000-00" required></div>
                     <div class="form-group"><label>Data Nascimento *</label><input type="date" id="pDataNasc" required></div>
@@ -216,8 +91,8 @@
                         <tr><th>ID</th><th>CPF</th><th>Nome</th><th>Data Nasc</th><th>Sexo</th><th>Convênio</th><th>Nº Carteirinha</th><th>Ação</th></tr>
                     </thead>
                     <tbody id="tblPacientes">
-                        <tr><td>1</td><td>333.444.555-66</td><td>Carlos Eduardo Santos</td><td>12/04/1985</td><td>Masculino</td><td>Unimed</td><td>88990011</td><td><button class="btn-secundario" onclick="verHistorico(1)">Ver Prontuário</button></td></tr>
-                        <tr><td>2</td><td>444.555.666-77</td><td>Mariana Costa Alves</td><td>25/09/1992</td><td>Feminino</td><td>Bradesco Saúde</td><td>55443322</td><td><button class="btn-secundario" onclick="verHistorico(2)">Ver Prontuário</button></td></tr>
+                        <tr><td>1</td><td>333.444.555-66</td><td>Carlos Eduardo Santos</td><td>12/04/1985</td><td>Masculino</td><td>Unimed</td><td>88990011</td><td><button class="btn-secundario btn-historico" data-id="1">Ver Prontuário</button></td></tr>
+                        <tr><td>2</td><td>444.555.666-77</td><td>Mariana Costa Alves</td><td>25/09/1992</td><td>Feminino</td><td>Bradesco Saúde</td><td>55443322</td><td><button class="btn-secundario btn-historico" data-id="2">Ver Prontuário</button></td></tr>
                     </tbody>
                 </table>
             </div>
@@ -279,7 +154,7 @@
             <p>Gerenciamento de horários e status dos atendimentos.</p>
 
             <h3>Novo Agendamento</h3>
-            <form class="form-grid" onsubmit="salvarAgendamento(event)">
+            <form class="form-grid" id="formAgendamento">
                 <div class="form-group"><label>Paciente *</label><select id="agPac"><option value="1">Carlos Eduardo Santos</option><option value="2">Mariana Costa Alves</option></select></div>
                 <div class="form-group"><label>Unidade *</label><select id="agUni"><option value="1">Unidade Central</option><option value="2">Unidade Zona Sul</option></select></div>
                 <div class="form-group"><label>Médico *</label><select id="agMed"><option value="101">Dr. Roberto Silva (CRM/SP 123456)</option><option value="102">Dra. Fernanda Lima (CRM/SP 654321)</option></select></div>
@@ -295,12 +170,12 @@
                     <tr>
                         <td>101</td><td>15/09/2026 09:00</td><td>Carlos Eduardo Santos</td><td>Dr. Roberto Silva</td><td>Unidade Central</td>
                         <td><span class="badge badge-verde">Confirmado</span></td>
-                        <td><button class="btn-secundario" onclick="alert('Presença já confirmada na recepção.')">Já Confirmado</button></td>
+                        <td><button class="btn-secundario btn-ja-confirmado">Já Confirmado</button></td>
                     </tr>
                     <tr>
                         <td>102</td><td>15/09/2026 10:30</td><td>Mariana Costa Alves</td><td>Dra. Fernanda Lima</td><td>Unidade Central</td>
                         <td><span class="badge badge-amarelo">Agendado</span></td>
-                        <td><button class="btn-secundario" onclick="confirmarPresenca(this)">Confirmar Presença</button></td>
+                        <td><button class="btn-secundario btn-confirmar-presenca">Confirmar Presença</button></td>
                     </tr>
                 </tbody>
             </table>
@@ -311,7 +186,7 @@
             <h2>Prontuário e Atendimento Médico</h2>
 
             <h3>Atendimento Clínico</h3>
-            <form class="form-grid" onsubmit="finalizarConsultaMedica(event)">
+            <form class="form-grid" id="formConsulta">
                 <div class="form-group"><label>Paciente Em Atendimento *</label><input type="text" value="Carlos Eduardo Santos (CPF: 333.444.555-66)" readonly></div>
                 <div class="form-group"><label>Médico Responsável *</label><input type="text" value="Dr. Roberto Silva (CRM/SP 123456)" readonly></div>
                 
@@ -361,13 +236,13 @@
                         <td>#EX-501</td><td>10/05/2026</td><td>Carlos Eduardo Santos</td><td>Ecocardiograma Transtorácico</td>
                         <td><span class="badge badge-amarelo">Solicitado</span></td>
                         <td><span class="badge badge-vermelho">Pendente > 90 dias</span></td>
-                        <td><button class="btn-secundario" onclick="atualizarExame(501)">Atualizar Laudo / Status</button></td>
+                        <td><button class="btn-secundario btn-atualizar-exame" data-id="501">Atualizar Laudo / Status</button></td>
                     </tr>
                     <tr>
                         <td>#EX-502</td><td>01/09/2026</td><td>Mariana Costa Alves</td><td>Hemograma Completo</td>
                         <td><span class="badge badge-azul">Agendado</span></td>
                         <td><span class="badge badge-verde">Em andamento</span></td>
-                        <td><button class="btn-secundario" onclick="atualizarExame(502)">Atualizar Laudo / Status</button></td>
+                        <td><button class="btn-secundario btn-atualizar-exame" data-id="502">Atualizar Laudo / Status</button></td>
                     </tr>
                 </tbody>
             </table>
@@ -387,7 +262,7 @@
                         <td>#PAG-901</td><td>Carlos Eduardo Santos</td><td>Unimed (80%)</td><td>R$ 200,00</td><td style="color:green;">R$ 160,00</td><td style="color:red;"><strong>R$ 40,00</strong></td><td>PIX</td><td><span class="badge badge-verde">Pago</span></td><td>Concluído</td>
                     </tr>
                     <tr>
-                        <td>#PAG-902</td><td>Mariana Costa Alves</td><td>Bradesco Saúde (70%)</td><td>R$ 200,00</td><td style="color:green;">R$ 140,00</td><td style="color:red;"><strong>R$ 60,00</strong></td><td>Pendente</td><td><span class="badge badge-amarelo">Aguardando</span></td><td><button class="btn-secundario" onclick="receberPagamento(902)">Receber Pagamento</button></td>
+                        <td>#PAG-902</td><td>Mariana Costa Alves</td><td>Bradesco Saúde (70%)</td><td>R$ 200,00</td><td style="color:green;">R$ 140,00</td><td style="color:red;"><strong>R$ 60,00</strong></td><td>Pendente</td><td><span class="badge badge-amarelo">Aguardando</span></td><td><button class="btn-secundario btn-receber-pagamento" data-id="902">Receber Pagamento</button></td>
                     </tr>
                 </tbody>
             </table>
@@ -424,113 +299,12 @@
     <!-- MODAL PRONTUÁRIO ELETRÔNICO -->
     <div id="modalProntuario" class="modal">
         <div class="modal-body">
-            <span class="fechar" onclick="fecharModal()">&times;</span>
+            <span class="fechar" id="btnFecharModal">&times;</span>
             <h2 id="mTitulo">Prontuário Eletrônico do Paciente</h2>
             <div id="mConteudo"></div>
         </div>
     </div>
 
-    <script>
-        function mudarAba(evt, abaId) {
-            var i, aba, btns;
-            aba = document.getElementsByClassName("aba");
-            for (i = 0; i < aba.length; i++) { aba[i].classList.remove("active"); }
-            btns = document.getElementsByClassName("btn-tab");
-            for (i = 0; i < btns.length; i++) { btns[i].classList.remove("active"); }
-            document.getElementById(abaId).classList.add("active");
-            evt.currentTarget.classList.add("active");
-        }
-
-        function mudarSubAba(evt, subId) {
-            var i, sub, btns;
-            sub = document.getElementsByClassName("sub-painel");
-            for (i = 0; i < sub.length; i++) { sub[i].classList.remove("active"); }
-            btns = document.getElementsByClassName("sub-btn");
-            for (i = 0; i < btns.length; i++) { btns[i].classList.remove("active"); }
-            document.getElementById(subId).classList.add("active");
-            evt.currentTarget.classList.add("active");
-        }
-
-        function salvarPaciente(e) {
-            e.preventDefault();
-            var nome = document.getElementById("pNome").value;
-            var cpf = document.getElementById("pCpf").value;
-            var data = document.getElementById("pDataNasc").value;
-            var sexo = document.getElementById("pSexo").value;
-            var conv = document.getElementById("pConvenio").options[document.getElementById("pConvenio").selectedIndex].text;
-            var cart = document.getElementById("pCarteirinha").value || "N/A";
-
-            var tbl = document.getElementById("tblPacientes");
-            var row = tbl.insertRow();
-            row.innerHTML = `<td>3</td><td>${cpf}</td><td>${nome}</td><td>${data}</td><td>${sexo}</td><td>${conv}</td><td>${cart}</td><td><button class="btn-secundario" onclick="verHistorico(3)">Ver Prontuário</button></td>`;
-            
-            alert("Paciente cadastrado com sucesso!");
-            e.target.reset();
-        }
-
-        function salvarAgendamento(e) {
-            e.preventDefault();
-            alert("Consulta agendada com sucesso!");
-            e.target.reset();
-        }
-
-        function confirmarPresenca(btn) {
-            btn.parentElement.previousElementSibling.innerHTML = '<span class="badge badge-verde">Confirmado</span>';
-            btn.outerHTML = '<button class="btn-secundario" onclick="alert(\'Presença já confirmada na recepção.\')">Já Confirmado</button>';
-            alert("Presença confirmada! O agendamento agora aparece liberado para a consulta médica.");
-        }
-
-        function finalizarConsultaMedica(e) {
-            e.preventDefault();
-            var diag = document.getElementById("cDiagnostico").value;
-            var exame = document.getElementById("solExame").value;
-
-            var msg = `Consulta médica finalizada com sucesso!\n- Diagnóstico: ${diag}\n- Prescrição registrada.`;
-            if (exame) { msg += `\n- Solicitação de Exame enviada para o módulo de exames: ${exame}`; }
-            
-            alert(msg);
-            e.target.reset();
-        }
-
-        function atualizarExame(id) {
-            var st = prompt("Digite o novo status do exame (Solicitado, Agendado, Realizado, Cancelado):", "Realizado");
-            if (st) {
-                if (st === "Realizado") { prompt("Digite o laudo do exame:", "Exame sem alterações significativas."); }
-                alert("Status e Resultado do exame #" + id + " atualizados!");
-            }
-        }
-
-        function receberPagamento(id) {
-            var forma = prompt("Selecione a forma de pagamento (PIX, Cartão de Crédito, Cartão de Débito, Dinheiro):", "PIX");
-            if (forma) {
-                alert("Pagamento #" + id + " recebido via " + forma + ".");
-            }
-        }
-
-        function verHistorico(id) {
-            var nomes = { 1: "Carlos Eduardo Santos", 2: "Mariana Costa Alves", 3: "Novo Paciente" };
-            var nome = nomes[id] || "Paciente";
-
-            var html = `
-                <p><strong>Paciente:</strong> ${nome} | <strong>Prontuário Nº:</strong> ${id}0492</p>
-                <hr>
-                <h4>Histórico de Consultas</h4>
-                <p><strong>Data:</strong> 10/08/2026 | <strong>Médico:</strong> Dr. Roberto Silva (CRM/SP 123456)</p>
-                <p><strong>Queixa:</strong> Cansaço e dores de cabeça persistentes.</p>
-                <p><strong>Diagnóstico:</strong> I10 - Hipertensão essencial (primária)</p>
-                <p><strong>Prescrição:</strong> Losartana Potássica 50mg - 1 comprimido ao dia.</p>
-                <hr>
-                <h4>Exames Solicitados</h4>
-                <p>- Ecocardiograma Transtorácico (Solicitado em 10/05/2026)</p>
-            `;
-
-            document.getElementById("mConteudo").innerHTML = html;
-            document.getElementById("modalProntuario").style.display = "block";
-        }
-
-        function fecharModal() {
-            document.getElementById("modalProntuario").style.display = "none";
-        }
-    </script>
+    <script type="module" src="/src/js/main.js"></script>
 </body>
 </html>
