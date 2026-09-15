@@ -24,14 +24,19 @@
         </div>
     </div>
 
+    <!-- Banner de Perfil Ativo -->
+    <div id="bannerPerfil" style="background:#003366; color:white; padding:8px 15px; font-size:13px; font-weight:bold; border-bottom:2px solid #28a745;">
+        Perfil Ativo: Ana Souza (Recepção) | Permissões: Gestão de Agendamentos, Cadastros e Recebimentos
+    </div>
+
     <div class="menu-tabs">
-        <button class="btn-tab active" onclick="mudarAba(event, 'aba-resumo')">Painel Geral</button>
-        <button class="btn-tab" onclick="mudarAba(event, 'aba-cadastros')">Cadastros Base</button>
-        <button class="btn-tab" onclick="mudarAba(event, 'aba-agendamentos')">Agendamentos</button>
-        <button class="btn-tab" onclick="mudarAba(event, 'aba-consultas')">Consultas Médicas</button>
-        <button class="btn-tab" onclick="mudarAba(event, 'aba-exames')">Módulo de Exames</button>
-        <button class="btn-tab" onclick="mudarAba(event, 'aba-faturamento')">Faturamento & Cobrança</button>
-        <button class="btn-tab" onclick="mudarAba(event, 'aba-relatorios')">Relatórios Gerenciais</button>
+        <button class="btn-tab active perm-painel" onclick="mudarAba(event, 'aba-resumo')">Painel Geral</button>
+        <button class="btn-tab perm-recepcao perm-admin" onclick="mudarAba(event, 'aba-cadastros')">Cadastros Base</button>
+        <button class="btn-tab perm-recepcao perm-medico perm-admin" onclick="mudarAba(event, 'aba-agendamentos')">Agendamentos</button>
+        <button class="btn-tab perm-medico" onclick="mudarAba(event, 'aba-consultas')">Consultas Médicas</button>
+        <button class="btn-tab perm-enfermeiro perm-medico" onclick="mudarAba(event, 'aba-exames')">Módulo de Exames</button>
+        <button class="btn-tab perm-recepcao perm-admin" onclick="mudarAba(event, 'aba-faturamento')">Faturamento e Cobrança</button>
+        <button class="btn-tab perm-admin" onclick="mudarAba(event, 'aba-relatorios')">Relatórios Gerenciais</button>
     </div>
 
     <div class="conteudo-box">
@@ -46,9 +51,9 @@
 
             <table>
                 <tr><th>Indicador Operacional</th><th>Quantidade / Status</th></tr>
-                <tr><td>Pacientes Cadastrados</td><td>148</td></tr>
-                <tr><td>Consultas Confirmadas Hoje</td><td>5</td></tr>
-                <tr><td>Médicos em Atendimento</td><td>4</td></tr>
+                <tr><td>Pacientes Cadastrados</td><td id="statPacientes">2</td></tr>
+                <tr><td>Unidades Físicas Ativas</td><td id="statUnidades">2</td></tr>
+                <tr><td>Médicos em Atendimento</td><td id="statMedicos">2</td></tr>
                 <tr><td>Status do Servidor / Uptime</td><td><span class="badge badge-verde">Operacional (99.8%)</span></td></tr>
             </table>
         </div>
@@ -58,16 +63,17 @@
             <h2>Gestão de Cadastros Base</h2>
             <div class="sub-menu">
                 <button class="sub-btn active" onclick="mudarSubAba(event, 'sub-pacientes')">Pacientes</button>
-                <button class="sub-btn" onclick="mudarSubAba(event, 'sub-medicos')">Corpo Médico & Profissionais</button>
                 <button class="sub-btn" onclick="mudarSubAba(event, 'sub-unidades')">Unidades Físicas</button>
+                <button class="sub-btn" onclick="mudarSubAba(event, 'sub-medicos')">Corpo Médico e Profissionais</button>
                 <button class="sub-btn" onclick="mudarSubAba(event, 'sub-convenios')">Convênios</button>
                 <button class="sub-btn" onclick="mudarSubAba(event, 'sub-medicamentos')">Medicamentos</button>
             </div>
 
             <!-- Sub Pacientes -->
             <div id="sub-pacientes" class="sub-painel active">
-                <h3>Cadastrar Novo Paciente</h3>
+                <h3 id="tituloFormPaciente">Cadastrar Novo Paciente</h3>
                 <form class="form-grid" id="formPaciente">
+                    <input type="hidden" id="pId">
                     <div class="form-group"><label>Nome Completo *</label><input type="text" id="pNome" required></div>
                     <div class="form-group"><label>CPF *</label><input type="text" id="pCpf" placeholder="000.000.000-00" required></div>
                     <div class="form-group"><label>Data Nascimento *</label><input type="date" id="pDataNasc" required></div>
@@ -75,75 +81,118 @@
                     <div class="form-group"><label>Telefone</label><input type="text" id="pTel" placeholder="(11) 99999-9999"></div>
                     <div class="form-group"><label>Convênio Ativo</label>
                         <select id="pConvenio">
-                            <option value="1">Unimed (Cobertura 80%)</option>
-                            <option value="2">Bradesco Saúde (Cobertura 70%)</option>
-                            <option value="3">Particular (Sem Cobertura)</option>
+                            <option value="Unimed Saúde">Unimed Saúde (Cobertura 80%)</option>
+                            <option value="Bradesco Saúde">Bradesco Saúde (Cobertura 70%)</option>
+                            <option value="Particular">Particular (Sem Cobertura)</option>
                         </select>
                     </div>
                     <div class="form-group"><label>Nº Carteirinha</label><input type="text" id="pCarteirinha" placeholder="Carteirinha do Convênio"></div>
-                    <div class="form-group full"><button type="submit" class="btn-salvar">Cadastrar Paciente</button></div>
+                    <div class="form-group full" style="display:flex; gap:10px;">
+                        <button type="submit" class="btn-salvar" id="btnSalvarPaciente">Salvar Paciente</button>
+                        <button type="button" class="btn-secundario" id="btnCancelarEdicaoPaciente" style="display:none;" onclick="cancelarEdicaoPaciente()">Cancelar Edição</button>
+                    </div>
                 </form>
 
                 <br>
                 <h3>Pacientes Cadastrados</h3>
                 <table>
                     <thead>
-                        <tr><th>ID</th><th>CPF</th><th>Nome</th><th>Data Nasc</th><th>Sexo</th><th>Convênio</th><th>Nº Carteirinha</th><th>Ação</th></tr>
+                        <tr><th>ID</th><th>CPF</th><th>Nome</th><th>Data Nasc</th><th>Sexo</th><th>Convênio</th><th>Nº Carteirinha</th><th>Ações</th></tr>
                     </thead>
-                    <tbody id="tblPacientes">
-                        <tr><td>1</td><td>333.444.555-66</td><td>Carlos Eduardo Santos</td><td>12/04/1985</td><td>Masculino</td><td>Unimed</td><td>88990011</td><td><button class="btn-secundario btn-historico" data-id="1">Ver Prontuário</button></td></tr>
-                        <tr><td>2</td><td>444.555.666-77</td><td>Mariana Costa Alves</td><td>25/09/1992</td><td>Feminino</td><td>Bradesco Saúde</td><td>55443322</td><td><button class="btn-secundario btn-historico" data-id="2">Ver Prontuário</button></td></tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Sub Médicos -->
-            <div id="sub-medicos" class="sub-painel">
-                <h3>Médicos e Profissionais de Saúde</h3>
-                <table>
-                    <thead><tr><th>ID</th><th>Nome Profissional</th><th>CPF</th><th>Registro CRM</th><th>Especialidades Vinculadas</th><th>Telefone</th></tr></thead>
-                    <tbody>
-                        <tr><td>101</td><td>Dr. Roberto Silva</td><td>111.222.333-44</td><td><span class="badge badge-azul">CRM/SP 123456</span></td><td>Cardiologia, Clínica Geral</td><td>(11) 98888-1111</td></tr>
-                        <tr><td>102</td><td>Dra. Fernanda Lima</td><td>222.333.444-55</td><td><span class="badge badge-azul">CRM/SP 654321</span></td><td>Pediatria</td><td>(11) 98888-2222</td></tr>
-                    </tbody>
+                    <tbody id="tblPacientes"></tbody>
                 </table>
             </div>
 
             <!-- Sub Unidades -->
             <div id="sub-unidades" class="sub-painel">
-                <h3>Unidades Físicas da Clínica</h3>
+                <h3 id="tituloFormUnidade">Cadastrar Nova Unidade Física</h3>
+                <form class="form-grid" id="formUnidade">
+                    <input type="hidden" id="uId">
+                    <div class="form-group"><label>Nome da Unidade *</label><input type="text" id="uNome" required placeholder="Ex: Unidade Zona Leste Tatuapé"></div>
+                    <div class="form-group"><label>Telefone *</label><input type="text" id="uTelefone" required placeholder="(11) 3333-3000"></div>
+                    <div class="form-group full"><label>Endereço Completo *</label><input type="text" id="uEndereco" required placeholder="Rua/Av, Número - Bairro - Cidade"></div>
+                    <div class="form-group full" style="display:flex; gap:10px;">
+                        <button type="submit" class="btn-salvar" id="btnSalvarUnidade">Salvar Unidade</button>
+                        <button type="button" class="btn-secundario" id="btnCancelarEdicaoUnidade" style="display:none;" onclick="cancelarEdicaoUnidade()">Cancelar Edição</button>
+                    </div>
+                </form>
+
+                <br>
+                <h3>Unidades Cadastradas</h3>
                 <table>
-                    <thead><tr><th>ID</th><th>Nome da Unidade</th><th>Endereço</th><th>Telefone</th></tr></thead>
-                    <tbody>
-                        <tr><td>1</td><td>Unidade Central Jardins</td><td>Av. Paulista, 1000 - SP</td><td>(11) 3333-1000</td></tr>
-                        <tr><td>2</td><td>Unidade Zona Sul Moema</td><td>Av. Ibirapuera, 500 - SP</td><td>(11) 3333-2000</td></tr>
-                    </tbody>
+                    <thead><tr><th>ID</th><th>Nome da Unidade</th><th>Endereço</th><th>Telefone</th><th>Ações</th></tr></thead>
+                    <tbody id="tblUnidades"></tbody>
+                </table>
+            </div>
+
+            <!-- Sub Médicos -->
+            <div id="sub-medicos" class="sub-painel">
+                <h3 id="tituloFormMedico">Cadastrar Novo Médico / Profissional</h3>
+                <form class="form-grid" id="formMedico">
+                    <input type="hidden" id="mId">
+                    <div class="form-group"><label>Nome Profissional *</label><input type="text" id="mNome" required placeholder="Ex: Dr. Marcelo Ramos"></div>
+                    <div class="form-group"><label>CPF *</label><input type="text" id="mCpf" required placeholder="000.000.000-00"></div>
+                    <div class="form-group"><label>Registro CRM *</label><input type="text" id="mCrm" required placeholder="CRM/SP 999999"></div>
+                    <div class="form-group"><label>Especialidades *</label><input type="text" id="mEspecialidade" required placeholder="Ex: Dermatologia, Cirurgia"></div>
+                    <div class="form-group full"><label>Telefone</label><input type="text" id="mTel" placeholder="(11) 98888-0000"></div>
+                    <div class="form-group full" style="display:flex; gap:10px;">
+                        <button type="submit" class="btn-salvar" id="btnSalvarMedico">Salvar Médico</button>
+                        <button type="button" class="btn-secundario" id="btnCancelarEdicaoMedico" style="display:none;" onclick="cancelarEdicaoMedico()">Cancelar Edição</button>
+                    </div>
+                </form>
+
+                <br>
+                <h3>Médicos e Profissionais de Saúde</h3>
+                <table>
+                    <thead><tr><th>ID</th><th>Nome Profissional</th><th>CPF</th><th>Registro CRM</th><th>Especialidades Vinculadas</th><th>Telefone</th><th>Ações</th></tr></thead>
+                    <tbody id="tblMedicos"></tbody>
                 </table>
             </div>
 
             <!-- Sub Convênios -->
             <div id="sub-convenios" class="sub-painel">
+                <h3 id="tituloFormConvenio">Cadastrar Novo Convênio</h3>
+                <form class="form-grid" id="formConvenio">
+                    <input type="hidden" id="cId">
+                    <div class="form-group"><label>Código *</label><input type="text" id="cCodigo" required placeholder="Ex: SUL"></div>
+                    <div class="form-group"><label>Nome do Convênio *</label><input type="text" id="cNome" required placeholder="Ex: SulAmérica Saúde"></div>
+                    <div class="form-group"><label>CNPJ *</label><input type="text" id="cCnpj" required placeholder="00.000.000/0001-00"></div>
+                    <div class="form-group"><label>Cobertura (%) *</label><input type="number" id="cCobertura" required min="0" max="100" placeholder="Ex: 85"></div>
+                    <div class="form-group full" style="display:flex; gap:10px;">
+                        <button type="submit" class="btn-salvar" id="btnSalvarConvenio">Salvar Convênio</button>
+                        <button type="button" class="btn-secundario" id="btnCancelarEdicaoConvenio" style="display:none;" onclick="cancelarEdicaoConvenio()">Cancelar Edição</button>
+                    </div>
+                </form>
+
+                <br>
                 <h3>Convênios Cadastrados</h3>
                 <table>
-                    <thead><tr><th>ID</th><th>Código</th><th>Nome do Convênio</th><th>CNPJ</th><th>Cobertura (%)</th></tr></thead>
-                    <tbody>
-                        <tr><td>1</td><td>UNI</td><td>Unimed Saúde</td><td>12.345.678/0001-90</td><td>80% (Coparticipação: 20%)</td></tr>
-                        <tr><td>2</td><td>BRA</td><td>Bradesco Saúde</td><td>98.765.432/0001-10</td><td>70% (Coparticipação: 30%)</td></tr>
-                        <tr><td>3</td><td>PART</td><td>Particular</td><td>00.000.000/0000-00</td><td>0% (Particular 100%)</td></tr>
-                    </tbody>
+                    <thead><tr><th>ID</th><th>Código</th><th>Nome do Convênio</th><th>CNPJ</th><th>Cobertura (%)</th><th>Ações</th></tr></thead>
+                    <tbody id="tblConvenios"></tbody>
                 </table>
             </div>
 
             <!-- Sub Medicamentos -->
             <div id="sub-medicamentos" class="sub-painel">
+                <h3 id="tituloFormMedicamento">Cadastrar Novo Medicamento</h3>
+                <form class="form-grid" id="formMedicamento">
+                    <input type="hidden" id="medId">
+                    <div class="form-group"><label>Código *</label><input type="text" id="medCodigo" required placeholder="Ex: MED04"></div>
+                    <div class="form-group"><label>Nome Comercial *</label><input type="text" id="medNome" required placeholder="Ex: Paracetamol 750mg"></div>
+                    <div class="form-group"><label>Princípio Ativo *</label><input type="text" id="medPrincipio" required placeholder="Ex: Paracetamol"></div>
+                    <div class="form-group"><label>Fabricante *</label><input type="text" id="medFabricante" required placeholder="Ex: Neo Química"></div>
+                    <div class="form-group full"><label>Apresentação *</label><input type="text" id="medApresentacao" required placeholder="Ex: Caixa 20 comprimidos"></div>
+                    <div class="form-group full" style="display:flex; gap:10px;">
+                        <button type="submit" class="btn-salvar" id="btnSalvarMedicamento">Salvar Medicamento</button>
+                        <button type="button" class="btn-secundario" id="btnCancelarEdicaoMedicamento" style="display:none;" onclick="cancelarEdicaoMedicamento()">Cancelar Edição</button>
+                    </div>
+                </form>
+
+                <br>
                 <h3>Catálogo de Medicamentos</h3>
                 <table>
-                    <thead><tr><th>ID</th><th>Código</th><th>Nome Comercial</th><th>Princípio Ativo</th><th>Fabricante</th><th>Apresentação</th></tr></thead>
-                    <tbody>
-                        <tr><td>1</td><td>MED01</td><td>Amoxicilina 500mg</td><td>Amoxicilina</td><td>Medley</td><td>Caixa 21 cápsulas</td></tr>
-                        <tr><td>2</td><td>MED02</td><td>Losartana Potássica 50mg</td><td>Losartana</td><td>EMS</td><td>Caixa 30 comprimidos</td></tr>
-                        <tr><td>3</td><td>MED03</td><td>Dipirona Sódica 500mg/ml</td><td>Dipirona</td><td>Eurofarma</td><td>Frasco 20ml gotas</td></tr>
-                    </tbody>
+                    <thead><tr><th>ID</th><th>Código</th><th>Nome Comercial</th><th>Princípio Ativo</th><th>Fabricante</th><th>Apresentação</th><th>Ações</th></tr></thead>
+                    <tbody id="tblMedicamentos"></tbody>
                 </table>
             </div>
         </div>
@@ -155,9 +204,9 @@
 
             <h3>Novo Agendamento</h3>
             <form class="form-grid" id="formAgendamento">
-                <div class="form-group"><label>Paciente *</label><select id="agPac"><option value="1">Carlos Eduardo Santos</option><option value="2">Mariana Costa Alves</option></select></div>
-                <div class="form-group"><label>Unidade *</label><select id="agUni"><option value="1">Unidade Central</option><option value="2">Unidade Zona Sul</option></select></div>
-                <div class="form-group"><label>Médico *</label><select id="agMed"><option value="101">Dr. Roberto Silva (CRM/SP 123456)</option><option value="102">Dra. Fernanda Lima (CRM/SP 654321)</option></select></div>
+                <div class="form-group"><label>Paciente *</label><select id="agPac"></select></div>
+                <div class="form-group"><label>Unidade *</label><select id="agUni"></select></div>
+                <div class="form-group"><label>Médico *</label><select id="agMed"></select></div>
                 <div class="form-group"><label>Data e Hora *</label><input type="datetime-local" id="agData" required></div>
                 <div class="form-group full"><button type="submit" class="btn-salvar">Agendar Consulta</button></div>
             </form>
@@ -166,18 +215,7 @@
             <h3>Agenda do Dia</h3>
             <table>
                 <thead><tr><th>ID</th><th>Data/Hora</th><th>Paciente</th><th>Médico</th><th>Unidade</th><th>Status Atual</th><th>Confirmar Presença</th></tr></thead>
-                <tbody id="tblAgendamentos">
-                    <tr>
-                        <td>101</td><td>15/09/2026 09:00</td><td>Carlos Eduardo Santos</td><td>Dr. Roberto Silva</td><td>Unidade Central</td>
-                        <td><span class="badge badge-verde">Confirmado</span></td>
-                        <td><button class="btn-secundario btn-ja-confirmado">Já Confirmado</button></td>
-                    </tr>
-                    <tr>
-                        <td>102</td><td>15/09/2026 10:30</td><td>Mariana Costa Alves</td><td>Dra. Fernanda Lima</td><td>Unidade Central</td>
-                        <td><span class="badge badge-amarelo">Agendado</span></td>
-                        <td><button class="btn-secundario btn-confirmar-presenca">Confirmar Presença</button></td>
-                    </tr>
-                </tbody>
+                <tbody id="tblAgendamentos"></tbody>
             </table>
         </div>
 
@@ -187,8 +225,8 @@
 
             <h3>Atendimento Clínico</h3>
             <form class="form-grid" id="formConsulta">
-                <div class="form-group"><label>Paciente Em Atendimento *</label><input type="text" value="Carlos Eduardo Santos (CPF: 333.444.555-66)" readonly></div>
-                <div class="form-group"><label>Médico Responsável *</label><input type="text" value="Dr. Roberto Silva (CRM/SP 123456)" readonly></div>
+                <div class="form-group"><label>Paciente Em Atendimento *</label><select id="cPacienteSelect" required></select></div>
+                <div class="form-group"><label>Médico Responsável *</label><input type="text" id="cMedicoNome" value="Dr. Roberto Silva (CRM/SP 123456)" readonly></div>
                 
                 <div class="form-group full"><label>Queixa Principal *</label><textarea id="cQueixa" rows="2" placeholder="Relato dos sintomas apresentados pelo paciente..." required></textarea></div>
                 <div class="form-group full"><label>Anamnese / Observações Médicas</label><textarea id="cAnamnese" rows="2" placeholder="Histórico de doenças, alergias e observações..."></textarea></div>
@@ -200,7 +238,7 @@
                 <div class="form-group full" style="border-top:1px solid #ccc; padding-top:10px; margin-top:5px;">
                     <strong>Prescrição de Medicamentos:</strong>
                     <div style="display:flex; gap:10px; margin-top:5px;">
-                        <select style="flex:2;" id="pMed"><option>Amoxicilina 500mg (Medley)</option><option>Dipirona Sódica 500mg/ml (Eurofarma)</option></select>
+                        <select style="flex:2;" id="pMed"></select>
                         <input style="flex:1;" type="text" id="pDose" placeholder="Dose (Ex: 1 cápsula)">
                         <input style="flex:1;" type="text" id="pFreq" placeholder="Frequência (Ex: 8 em 8h)">
                         <input style="flex:1;" type="text" id="pDuracao" placeholder="Duração (Ex: 7 dias)">
@@ -225,26 +263,13 @@
         <!-- GESTÃO DE EXAMES -->
         <div id="aba-exames" class="aba">
             <h2>Módulo de Exames e Procedimentos</h2>
-            <p>Acompanhamento do ciclo de exames solicitados.</p>
+            <p>Acompanhamento e atualização dos exames pelo Enfermeiro.</p>
 
             <table>
                 <thead>
                     <tr><th>Cód Solicitação</th><th>Data Solicitação</th><th>Paciente</th><th>Exame Solicitado</th><th>Status Atual</th><th>Situação</th><th>Ação</th></tr>
                 </thead>
-                <tbody id="tblExames">
-                    <tr>
-                        <td>#EX-501</td><td>10/05/2026</td><td>Carlos Eduardo Santos</td><td>Ecocardiograma Transtorácico</td>
-                        <td><span class="badge badge-amarelo">Solicitado</span></td>
-                        <td><span class="badge badge-vermelho">Pendente > 90 dias</span></td>
-                        <td><button class="btn-secundario btn-atualizar-exame" data-id="501">Atualizar Laudo / Status</button></td>
-                    </tr>
-                    <tr>
-                        <td>#EX-502</td><td>01/09/2026</td><td>Mariana Costa Alves</td><td>Hemograma Completo</td>
-                        <td><span class="badge badge-azul">Agendado</span></td>
-                        <td><span class="badge badge-verde">Em andamento</span></td>
-                        <td><button class="btn-secundario btn-atualizar-exame" data-id="502">Atualizar Laudo / Status</button></td>
-                    </tr>
-                </tbody>
+                <tbody id="tblExames"></tbody>
             </table>
         </div>
 
@@ -257,14 +282,7 @@
                 <thead>
                     <tr><th>Cód Pagamento</th><th>Paciente</th><th>Convênio</th><th>Valor Consulta</th><th>Coberto pelo Convênio</th><th>A Pagar (Paciente)</th><th>Forma Pagamento</th><th>Status</th><th>Ação</th></tr>
                 </thead>
-                <tbody id="tblFaturamento">
-                    <tr>
-                        <td>#PAG-901</td><td>Carlos Eduardo Santos</td><td>Unimed (80%)</td><td>R$ 200,00</td><td style="color:green;">R$ 160,00</td><td style="color:red;"><strong>R$ 40,00</strong></td><td>PIX</td><td><span class="badge badge-verde">Pago</span></td><td>Concluído</td>
-                    </tr>
-                    <tr>
-                        <td>#PAG-902</td><td>Mariana Costa Alves</td><td>Bradesco Saúde (70%)</td><td>R$ 200,00</td><td style="color:green;">R$ 140,00</td><td style="color:red;"><strong>R$ 60,00</strong></td><td>Pendente</td><td><span class="badge badge-amarelo">Aguardando</span></td><td><button class="btn-secundario btn-receber-pagamento" data-id="902">Receber Pagamento</button></td>
-                    </tr>
-                </tbody>
+                <tbody id="tblFaturamento"></tbody>
             </table>
         </div>
 
@@ -275,22 +293,14 @@
             <h3>1. Relatório de Exames Solicitados Pendentes de Realização</h3>
             <table>
                 <thead><tr><th>Paciente</th><th>Exame Solicitado</th><th>Data Solicitação</th><th>Tempo de Espera</th><th>Status</th></tr></thead>
-                <tbody>
-                    <tr style="background:#f8d7da;">
-                        <td>Carlos Eduardo Santos</td><td>Ecocardiograma Transtorácico</td><td>10/05/2026</td><td>127 Dias</td><td><strong style="color:red;">Pendente há mais de 90 dias</strong></td>
-                    </tr>
-                </tbody>
+                <tbody id="tblRelatorioExames"></tbody>
             </table>
 
             <br>
             <h3>2. Resumo de Atendimentos por Convênio</h3>
             <table>
                 <thead><tr><th>Convênio</th><th>Qtd Atendimentos</th><th>Valor Bruto</th><th>Valor Coberto pelo Convênio</th><th>Coparticipação Pacientes</th></tr></thead>
-                <tbody>
-                    <tr><td>Unimed Saúde (80%)</td><td>14</td><td>R$ 2.800,00</td><td>R$ 2.240,00</td><td>R$ 560,00</td></tr>
-                    <tr><td>Bradesco Saúde (70%)</td><td>8</td><td>R$ 1.600,00</td><td>R$ 1.120,00</td><td>R$ 480,00</td></tr>
-                    <tr><td>Particular (100%)</td><td>5</td><td>R$ 1.000,00</td><td>R$ 0,00</td><td>R$ 1.000,00</td></tr>
-                </tbody>
+                <tbody id="tblRelatorioConvenios"></tbody>
             </table>
         </div>
 

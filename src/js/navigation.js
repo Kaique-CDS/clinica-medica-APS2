@@ -1,28 +1,48 @@
-// Módulo de controle de navegação e abas
+// Módulo de controle de navegação de abas e sub-abas
 export function initNavigation() {
     window.mudarAba = function(evt, abaId) {
-        const abas = document.getElementsByClassName("aba");
-        for (let i = 0; i < abas.length; i++) {
-            abas[i].classList.remove("active");
+        if (evt && evt.preventDefault) evt.preventDefault();
+        
+        const abas = document.querySelectorAll(".aba");
+        abas.forEach(aba => aba.classList.remove("active"));
+        
+        const btns = document.querySelectorAll(".btn-tab");
+        btns.forEach(btn => btn.classList.remove("active"));
+        
+        const abaAlvo = document.getElementById(abaId);
+        if (abaAlvo) {
+            abaAlvo.classList.add("active");
         }
-        const btns = document.getElementsByClassName("btn-tab");
-        for (let i = 0; i < btns.length; i++) {
-            btns[i].classList.remove("active");
+        
+        if (evt && evt.currentTarget) {
+            evt.currentTarget.classList.add("active");
         }
-        document.getElementById(abaId).classList.add("active");
-        evt.currentTarget.classList.add("active");
     };
 
     window.mudarSubAba = function(evt, subId) {
-        const subs = document.getElementsByClassName("sub-painel");
-        for (let i = 0; i < subs.length; i++) {
-            subs[i].classList.remove("active");
+        if (evt && evt.preventDefault) evt.preventDefault();
+        
+        // Remove 'active' de todos os sub-paineis
+        const subs = document.querySelectorAll(".sub-painel");
+        subs.forEach(sub => {
+            sub.classList.remove("active");
+            sub.style.display = "none"; // Garante ocultacao explicita
+        });
+        
+        // Remove 'active' de todos os botoes de sub-aba
+        const btns = document.querySelectorAll(".sub-btn");
+        btns.forEach(btn => btn.classList.remove("active"));
+        
+        // Exibe o sub-painel selecionado
+        const subAlvo = document.getElementById(subId);
+        if (subAlvo) {
+            subAlvo.classList.add("active");
+            subAlvo.style.display = "block"; // Garante exibicao explicita
         }
-        const btns = document.getElementsByClassName("sub-btn");
-        for (let i = 0; i < btns.length; i++) {
-            btns[i].classList.remove("active");
+        
+        // Marca o botao como ativo
+        if (evt && evt.currentTarget) {
+            evt.currentTarget.classList.add("active");
         }
-        document.getElementById(subId).classList.add("active");
-        evt.currentTarget.classList.add("active");
     };
 }

@@ -128,9 +128,14 @@ tr:nth-child(even) { background-color: #f9f9f9; }
     font-size: 12px;
 }
 
-.sub-btn.active { background: #003366; color: white; }
-.sub-pane { display: none; }
-.sub-pane.active { display: block; }
+.sub-btn.active { 
+    background: #003366 !important; 
+    color: white !important; 
+    font-weight: bold;
+}
+
+.sub-painel { display: none; }
+.sub-painel.active { display: block !important; }
 
 .modal {
     display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
