@@ -32,7 +32,7 @@
     <div class="menu-tabs">
         <button class="btn-tab active perm-painel" onclick="mudarAba(event, 'aba-resumo')">Painel Geral</button>
         <button class="btn-tab perm-recepcao perm-admin" onclick="mudarAba(event, 'aba-cadastros')">Cadastros Base</button>
-        <button class="btn-tab perm-recepcao perm-medico perm-admin" onclick="mudarAba(event, 'aba-agendamentos')">Agendamentos</button>
+        <button class="btn-tab perm-recepcao perm-admin" onclick="mudarAba(event, 'aba-agendamentos')">Agendamentos</button>
         <button class="btn-tab perm-medico" onclick="mudarAba(event, 'aba-consultas')">Consultas Médicas</button>
         <button class="btn-tab perm-enfermeiro perm-medico" onclick="mudarAba(event, 'aba-exames')">Módulo de Exames</button>
         <button class="btn-tab perm-recepcao perm-admin" onclick="mudarAba(event, 'aba-faturamento')">Faturamento e Cobrança</button>
@@ -95,6 +95,10 @@
 
                 <br>
                 <h3>Pacientes Cadastrados</h3>
+                <div style="margin-bottom:10px; display:flex; gap:10px; align-items:center;">
+                    <label for="buscaPaciente"><strong>Buscar Paciente:</strong></label>
+                    <input type="text" id="buscaPaciente" placeholder="Pesquisar por CPF, Nome ou Convênio..." style="padding:6px; flex:1; max-width:350px; border:1px solid #ccc; border-radius:3px;">
+                </div>
                 <table>
                     <thead>
                         <tr><th>ID</th><th>CPF</th><th>Nome</th><th>Data Nasc</th><th>Sexo</th><th>Convênio</th><th>Nº Carteirinha</th><th>Ações</th></tr>

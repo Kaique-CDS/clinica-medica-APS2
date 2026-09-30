@@ -33,10 +33,22 @@ export function renderUnidades() {
 }
 
 // 2. PACIENTES (CRUD)
-export function renderPacientes() {
+export function renderPacientes(termoBusca = '') {
     const tbl = document.getElementById("tblPacientes");
     if (!tbl) return;
-    tbl.innerHTML = db.pacientes.map(p => `
+
+    let pacientes = db.pacientes;
+    if (termoBusca) {
+        const termo = termoBusca.toLowerCase();
+        pacientes = pacientes.filter(p => 
+            (p.cpf && p.cpf.toLowerCase().includes(termo)) ||
+            (p.nome && p.nome.toLowerCase().includes(termo)) ||
+            (p.convenio && p.convenio.toLowerCase().includes(termo)) ||
+            (p.id && String(p.id).includes(termo))
+        );
+    }
+
+    tbl.innerHTML = pacientes.map(p => `
         <tr>
             <td>${p.id}</td>
             <td>${p.cpf}</td>
@@ -124,11 +136,16 @@ export function renderAgendamentos() {
             <td>${ag.pacienteNome}</td>
             <td>${ag.medicoNome}</td>
             <td>${ag.unidadeNome}</td>
-            <td><span class="badge ${ag.status === 'Confirmado' ? 'badge-verde' : 'badge-amarelo'}">${ag.status}</span></td>
+            <td><span class="badge ${ag.status === 'Confirmado' ? 'badge-verde' : (ag.status === 'Faltou' ? 'badge-vermelho' : 'badge-amarelo')}">${ag.status}</span></td>
             <td>
                 ${ag.status === 'Confirmado' 
                     ? '<button class="btn-secundario btn-ja-confirmado">Já Confirmado</button>' 
-                    : `<button class="btn-secundario btn-confirmar-presenca" data-id="${ag.id}">Confirmar Presença</button>`}
+                    : (ag.status === 'Faltou'
+                        ? '<span class="badge badge-vermelho">Ausente</span>'
+                        : `<button class="btn-secundario btn-confirmar-presenca" data-id="${ag.id}">Confirmar Presença</button>
+                           <button class="btn-secundario btn-paciente-faltou" data-id="${ag.id}" style="background:#dc3545;">Paciente Faltou</button>`
+                      )
+                }
             </td>
         </tr>
     `).join('');
@@ -146,7 +163,10 @@ export function renderExames() {
             <td>${ex.exame}</td>
             <td><span class="badge ${ex.status === 'Realizado' ? 'badge-verde' : (ex.status === 'Agendado' ? 'badge-azul' : 'badge-amarelo')}">${ex.status}</span></td>
             <td><span class="badge ${ex.dias > 90 ? 'badge-vermelho' : 'badge-verde'}">${ex.dias > 90 ? 'Pendente > 90 dias' : 'Em andamento'}</span></td>
-            <td><button class="btn-secundario btn-atualizar-exame" data-id="${ex.id}">Atualizar Laudo / Status</button></td>
+            <td>
+                <button class="btn-secundario btn-atualizar-exame" data-id="${ex.id}">Atualizar Status</button>
+                <button class="btn-secundario btn-laudo-prontuario" data-id="${ex.id}" style="background:#17a2b8;">Laudo / Prontuário</button>
+            </td>
         </tr>
     `).join('');
 }

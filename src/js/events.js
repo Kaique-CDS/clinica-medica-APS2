@@ -3,11 +3,20 @@ import {
     renderAllTables, 
     renderAgendamentos,
     renderExames,
-    renderPagamentos
+    renderPagamentos,
+    renderPacientes
 } from './renderers.js';
 
 export function initEvents() {
     renderAllTables();
+
+    // Evento de busca de paciente por CPF ou Nome
+    const inputBusca = document.getElementById('buscaPaciente');
+    if (inputBusca) {
+        inputBusca.addEventListener('input', (e) => {
+            renderPacientes(e.target.value);
+        });
+    }
 
     // Evento de troca de perfil de usuário logado
     const selectAtor = document.getElementById('selectAtor');
@@ -395,6 +404,17 @@ export function initEvents() {
             }
         }
 
+        // PACIENTE FALTOU
+        if (target.classList.contains('btn-paciente-faltou')) {
+            const id = target.getAttribute('data-id');
+            const ag = db.agendamentos.find(a => a.id == id);
+            if (ag) {
+                ag.status = 'Faltou';
+                renderAgendamentos();
+                alert(`Falta registrada para o paciente "${ag.pacienteNome}".`);
+            }
+        }
+
         // ATUALIZAR EXAME
         if (target.classList.contains('btn-atualizar-exame')) {
             const id = target.getAttribute('data-id');
@@ -407,6 +427,17 @@ export function initEvents() {
                     renderExames();
                     alert("Status e Resultado do exame #" + id + " atualizados com sucesso!");
                 }
+            }
+        }
+
+        // LAUDO / PRONTUÁRIO NA ENFERMARIA
+        if (target.classList.contains('btn-laudo-prontuario')) {
+            const id = target.getAttribute('data-id');
+            const ex = db.exames.find(e => e.id == id);
+            if (ex) {
+                const pac = db.pacientes.find(p => p.nome.toLowerCase().includes(ex.paciente.toLowerCase()) || ex.paciente.toLowerCase().includes(p.nome.toLowerCase()));
+                const pacId = pac ? pac.id : 1;
+                verHistorico(pacId);
             }
         }
 
